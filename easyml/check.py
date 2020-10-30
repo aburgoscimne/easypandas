@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 
 @pd.api.extensions.register_dataframe_accessor("check")
@@ -66,3 +67,27 @@ class _:
         Check if an attribute is less or equal than a reference value or another attribute.
         """
         return self._series <= reference
+
+    def get_time_between(
+        self,
+        reference_date: [pd.Series, str],
+        mode: str = "days",
+        invert: bool = False,
+    ) -> pd.DataFrame:
+        """
+        Returns time difference between the column and a reference date or another column in days or years.
+        """
+        if isinstance(reference_date, str):
+            reference_date = np.datetime64(reference_date)
+
+        delta = self._series - reference_date
+
+        if mode == "years":
+            difference = delta / np.timedelta64(1, "Y")
+        elif mode == "days":
+            difference = delta / np.timedelta64(1, "D")
+
+        if invert:
+            return difference * -1
+
+        return difference
