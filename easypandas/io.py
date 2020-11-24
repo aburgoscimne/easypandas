@@ -6,7 +6,7 @@ class _:
     def __init__(self, pandas_obj):
         self._df = pandas_obj
 
-    def save_df_to_parquet(self, dest_path: str, file_name: str):
+    def save_to_parquet(self, dest_path: str, file_name: str):
         """
         Save pandas dataframe to a parquet file.
         """
@@ -16,7 +16,7 @@ class _:
         )
 
 
-def load_parquet_to_df(source_path: str, file_name: str) -> pd.DataFrame:
+def load_from_parquet(source_path: str, file_name: str) -> pd.DataFrame:
     """
     Load parquet file and returns a pandas dataframe.
     """

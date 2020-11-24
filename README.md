@@ -1,2 +1,2 @@
-# easyml
+# Easy Pandas
 

@@ -68,7 +68,7 @@ class _:
         """
         return self._series <= reference
 
-    def get_time_between(
+    def get_elapsed_time_from(
         self,
         reference_date: [pd.Series, str],
         mode: str = "days",
