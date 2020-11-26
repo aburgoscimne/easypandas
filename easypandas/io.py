@@ -1,3 +1,5 @@
+import pathlib
+from typing import Union
 import pandas as pd
 
 
@@ -6,18 +8,52 @@ class _:
     def __init__(self, pandas_obj):
         self._df = pandas_obj
 
-    def save_to_parquet(self, dest_path: str, file_name: str):
+    def save(
+        self,
+        path: Union[str, pathlib.Path],
+        saving_format: str = "parquet",
+        *args,
+        **kwargs,
+    ):
         """
-        Save pandas dataframe to a parquet file.
+        Saves pandas dataframe to a file. It can be in
+        parquet or csv format.
+        Write object to a comma-separated values (csv) file.
+
+        Parameters
+        ----------
+        path : str or file handle, default None
+            File path or object where the dataframe has to be saved.
+
+        format : str, default "parquet"
+            The way the dataframe has to be saved.
         """
-        self._df.to_parquet(
-            f"{dest_path}/{file_name}",
-            use_deprecated_int96_timestamps=True,
-        )
+        assert saving_format in [
+            "parquet",
+            "csv",
+        ], "saving_format has to be parquet or csv."
+
+        if saving_format == "parquet":
+            self._df.to_parquet(path, *args, **kwargs)
+        elif saving_format == "csv":
+            self._df.to_csv(path, *args, **kwargs)
 
 
-def load_from_parquet(source_path: str, file_name: str) -> pd.DataFrame:
+def load(path: Union[str, pathlib.Path]) -> pd.DataFrame:
     """
-    Load parquet file and returns a pandas dataframe.
+    Load parquet or csv file and returns a pandas dataframe.
+    Files to load must be on parquet or csv format.
+
+    Parameters
+        ----------
+        path : str or file handle, default None
+            File path or object where the source file is.
     """
-    return pd.read_parquet(f"{source_path}/{file_name}")
+
+    try:
+        return pd.read_parquet(path)
+    except OSError:
+        try:
+            return pd.read_csv(path)
+        except:
+            raise ValueError("Bad parsing specs or not a parquet nor csv file.")
